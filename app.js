@@ -1,56 +1,5 @@
 // App Data for Dynamic Modals
 const APP_DETAILS = {
-  aetherflow: {
-    title: "AetherFlow",
-    tagline: "Immersive ambient focus spaces",
-    icon: "🌀",
-    bg: "linear-gradient(135deg, hsl(174, 90%, 50%), hsl(220, 80%, 40%))",
-    techStack: ["iOS", "SwiftUI", "CoreAudio", "Web Audio API", "HTML5"],
-    description: "AetherFlow helps you carve out personal bubbles of productivity in loud environments. By utilizing binaural beats, procedurally generated white noise, and immersive graphical weather landscapes, it creates a custom-tailored environment suited to deep coding sessions, writing marathons, or meditative resets.",
-    features: [
-      "Procedurally generated ambient noise engines (Rain, Cosmic hum, Deep ocean)",
-      "Binaural beats frequency selector (Alpha, Beta, Theta waves)",
-      "Minimalist HUD interface that stays out of your way",
-      "Custom integrated Pomodoro and timer scripts",
-      "Interactive fluid simulation that reacts to your mouse/touch movements"
-    ],
-    ctaText: "Open Web Player (Beta)",
-    version: "v2.4.0 (Latest)"
-  },
-  novalist: {
-    title: "NovaList",
-    tagline: "Blazing-fast, keyboard-first task planning",
-    icon: "⚡",
-    bg: "linear-gradient(135deg, hsl(263, 90%, 60%), hsl(328, 100%, 60%))",
-    techStack: ["React", "Electron", "LocalForage", "TailwindCSS", "Vite"],
-    description: "NovaList redefines your checklist experience. Designed specifically for developers and power users, NovaList removes all mouse dependency. Fire commands, navigate project logs, re-order queues, and log micro-notes using an intuitive fuzzy-search command panel.",
-    features: [
-      "Instant launch and global shortcut activation",
-      "Command bar launcher (Cmd/Ctrl + K) for lighting fast sorting",
-      "Full offline functionality with automatic local syncing",
-      "Vim-inspired hotkeys for advanced keyboard wizards",
-      "Clean export options supporting markdown, JSON, and CSV tables"
-    ],
-    ctaText: "Download for Desktop",
-    version: "v1.1.2 (Beta)"
-  },
-  zenithreader: {
-    title: "Zenith Reader",
-    tagline: "Distraction-free news reading",
-    icon: "📖",
-    bg: "linear-gradient(135deg, hsl(328, 100%, 60%), hsl(174, 90%, 50%))",
-    techStack: ["Flutter", "Dart", "SQLite", "Python Summary API"],
-    description: "Zenith Reader compiles all your informational inputs into a unified, clean feed. Rather than tracking clicks and optimizing algorithms to waste your time, Zenith focuses on calmness. Subscribed newsletter items and RSS streams are reformatted into pure typographic layouts with locally cached text summarizations.",
-    features: [
-      "Intelligent text extraction that bypasses page paywalls and trackers",
-      "Local AI-driven brief summarization (No API keys or cloud transfers required)",
-      "Highly customizable typography, font sizing, and line heights",
-      "Offline sync to pre-fetch reading lists for offline trips",
-      "Zero telemetry, zero user identification, zero tracking cookies"
-    ],
-    ctaText: "Get App Store Build",
-    version: "v3.0.5 (Staging)"
-  },
   pickvault: {
     title: "PickVault",
     tagline: "Manage planned purchases and wishlists",
@@ -104,14 +53,16 @@ document.addEventListener("DOMContentLoaded", () => {
   const navMenu = document.getElementById("navMenu");
   const navLinks = document.querySelectorAll(".nav-link");
 
-  menuToggle.addEventListener("click", () => {
-    navMenu.classList.toggle("active");
-  });
+  if (menuToggle && navMenu) {
+    menuToggle.addEventListener("click", () => {
+      navMenu.classList.toggle("active");
+    });
+  }
 
   // Close mobile menu when clicking links
   navLinks.forEach(link => {
     link.addEventListener("click", () => {
-      navMenu.classList.remove("active");
+      if (navMenu) navMenu.classList.remove("active");
     });
   });
 
@@ -139,7 +90,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   const openAppModal = (appKey) => {
     const data = APP_DETAILS[appKey];
-    if (!data) return;
+    if (!data || !modalBody || !modalOverlay) return;
 
     // Inject content
     modalBody.innerHTML = `
@@ -170,7 +121,8 @@ document.addEventListener("DOMContentLoaded", () => {
           `<a class="btn btn-primary" href="${data.ctaLink}" target="_blank" rel="noopener" onclick="window.closeAppModal()">${data.ctaText}</a>` :
           `<button class="btn btn-primary" onclick="window.triggerMockToast('Downloading ${data.title}... Launching build installer.')">${data.ctaText}</button>`
         }
-        <button class="btn btn-secondary" onclick="window.closeAppModal()">Close details</button>
+        <a class="btn btn-secondary" href="pickvault.html" onclick="window.closeAppModal()">Open Full Page</a>
+        <button class="btn btn-secondary" onclick="window.closeAppModal()">Close</button>
       </div>
     `;
 
@@ -179,7 +131,7 @@ document.addEventListener("DOMContentLoaded", () => {
   };
 
   const closeAppModal = () => {
-    modalOverlay.classList.remove("active");
+    if (modalOverlay) modalOverlay.classList.remove("active");
     document.body.style.overflow = ""; // Re-enable scroll
   };
 
@@ -192,6 +144,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
   detailsButtons.forEach(btn => {
     btn.addEventListener("click", (e) => {
+      e.preventDefault();
       e.stopPropagation();
       const appKey = btn.getAttribute("data-app");
       openAppModal(appKey);
@@ -199,15 +152,19 @@ document.addEventListener("DOMContentLoaded", () => {
   });
 
   // Allow clicking outer overlay to close modal
-  modalOverlay.addEventListener("click", (e) => {
-    if (e.target === modalOverlay) closeAppModal();
-  });
+  if (modalOverlay) {
+    modalOverlay.addEventListener("click", (e) => {
+      if (e.target === modalOverlay) closeAppModal();
+    });
+  }
 
-  modalClose.addEventListener("click", closeAppModal);
+  if (modalClose) {
+    modalClose.addEventListener("click", closeAppModal);
+  }
 
   // Esc key closure
   document.addEventListener("keydown", (e) => {
-    if (e.key === "Escape" && modalOverlay.classList.contains("active")) {
+    if (e.key === "Escape" && modalOverlay && modalOverlay.classList.contains("active")) {
       closeAppModal();
     }
   });
@@ -219,6 +176,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const toastText = document.getElementById("toastText");
 
   const showToast = (message) => {
+    if (!toast || !toastText) return;
     toastText.textContent = message;
     toast.classList.add("active");
     setTimeout(() => {
@@ -226,38 +184,42 @@ document.addEventListener("DOMContentLoaded", () => {
     }, 4000);
   };
 
-  contactForm.addEventListener("submit", (e) => {
-    e.preventDefault();
+  if (contactForm) {
+    contactForm.addEventListener("submit", (e) => {
+      e.preventDefault();
 
-    const nameInput = document.getElementById("name");
-    const emailInput = document.getElementById("email");
-    const messageInput = document.getElementById("message");
+      const nameInput = document.getElementById("name");
+      const emailInput = document.getElementById("email");
+      const messageInput = document.getElementById("message");
 
-    // Simple validation feedback
-    if (!nameInput.value.trim() || !emailInput.value.trim() || !messageInput.value.trim()) {
-      showToast("Please fill in all details before submitting.");
-      return;
-    }
+      // Simple validation feedback
+      if (!nameInput.value.trim() || !emailInput.value.trim() || !messageInput.value.trim()) {
+        showToast("Please fill in all details before submitting.");
+        return;
+      }
 
-    if (!validateEmail(emailInput.value)) {
-      showToast("Please supply a valid email address.");
-      return;
-    }
+      if (!validateEmail(emailInput.value)) {
+        showToast("Please supply a valid email address.");
+        return;
+      }
 
-    // Submit state change
-    const btnSpan = submitBtn.querySelector("span");
-    const originalText = btnSpan.textContent;
-    btnSpan.textContent = "Sending Message...";
-    submitBtn.disabled = true;
+      // Submit state change
+      if (submitBtn) {
+        const btnSpan = submitBtn.querySelector("span");
+        const originalText = btnSpan ? btnSpan.textContent : "Send Message";
+        if (btnSpan) btnSpan.textContent = "Sending Message...";
+        submitBtn.disabled = true;
 
-    // Simulate network delay
-    setTimeout(() => {
-      showToast(`Thank you, ${nameInput.value}! Message received successfully.`);
-      contactForm.reset();
-      btnSpan.textContent = originalText;
-      submitBtn.disabled = false;
-    }, 1200);
-  });
+        // Simulate network delay
+        setTimeout(() => {
+          showToast(`Thank you, ${nameInput.value}! Message received successfully.`);
+          contactForm.reset();
+          if (btnSpan) btnSpan.textContent = originalText;
+          submitBtn.disabled = false;
+        }, 1200);
+      }
+    });
+  }
 
   function validateEmail(email) {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

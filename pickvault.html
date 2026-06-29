@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PickVault | Take the Impulse Out of Shopping</title>
+  <meta name="description" content="PickVault is a simple, clean, and free Android app to manage your planned purchases and wishlists. 100% offline, privacy-first, and zero permissions.">
+  <link rel="stylesheet" href="style.css">
+  <style>
+    .product-container {
+      padding: var(--spacing-xl) 0 var(--spacing-lg);
+    }
+    .product-hero {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--spacing-md);
+      align-items: center;
+      margin-bottom: var(--spacing-lg);
+    }
+    @media (min-width: 768px) {
+      .product-hero {
+        grid-template-columns: 100px 1fr;
+        gap: var(--spacing-md);
+      }
+    }
+    .product-title-group h1 {
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      line-height: 1.1;
+      margin-bottom: 0.5rem;
+    }
+    .product-subtitle {
+      font-size: clamp(1.1rem, 2vw, 1.4rem);
+      color: var(--primary);
+      font-family: var(--font-heading);
+      font-weight: 500;
+      margin-bottom: 1.5rem;
+    }
+    .meta-badge-row {
+      display: flex;
+      gap: 0.75rem;
+      flex-wrap: wrap;
+      margin-bottom: 2rem;
+    }
+    .meta-badge {
+      font-size: 0.8rem;
+      padding: 0.35rem 0.85rem;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-secondary);
+      display: inline-flex;
+      align-items: center;
+      gap: 0.35rem;
+    }
+    .meta-badge svg {
+      width: 14px;
+      height: 14px;
+      fill: currentColor;
+    }
+    .back-btn {
+      margin-bottom: 2rem;
+    }
+    .info-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: var(--spacing-md);
+      margin-bottom: var(--spacing-lg);
+    }
+    @media (min-width: 992px) {
+      .info-grid {
+        grid-template-columns: 1.8fr 1fr;
+        gap: var(--spacing-lg);
+      }
+    }
+    .detail-card h2 {
+      font-size: 1.75rem;
+      margin-bottom: 1.25rem;
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+    .detail-card p {
+      margin-bottom: 1.25rem;
+      line-height: 1.7;
+    }
+    .features-list {
+      list-style: none;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1rem;
+      margin-top: 1.5rem;
+    }
+    @media (min-width: 600px) {
+      .features-list {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    .feature-item {
+      background: rgba(255, 255, 255, 0.02);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      padding: 1rem;
+      border-radius: var(--border-radius-sm);
+      display: flex;
+      gap: 0.75rem;
+    }
+    .feature-check {
+      color: var(--primary);
+      font-weight: bold;
+      font-size: 1.2rem;
+      line-height: 1;
+    }
+    .feature-text h4 {
+      font-size: 0.95rem;
+      margin-bottom: 0.25rem;
+      color: var(--text-primary);
+    }
+    .feature-text p {
+      font-size: 0.85rem;
+      color: var(--text-secondary);
+      margin-bottom: 0;
+      line-height: 1.4;
+    }
+    .install-step {
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 1.25rem;
+    }
+    .step-number {
+      width: 28px;
+      height: 28px;
+      background: var(--primary-glow);
+      border: 1px solid var(--primary);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      color: var(--primary);
+      font-size: 0.9rem;
+      flex-shrink: 0;
+    }
+    .step-text h4 {
+      font-size: 1rem;
+      margin-bottom: 0.25rem;
+    }
+    .step-text p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+      line-height: 1.5;
+    }
+    .faq-item {
+      margin-bottom: 1.5rem;
+      border-bottom: 1px solid var(--border-color);
+      padding-bottom: 1.25rem;
+    }
+    .faq-item:last-child {
+      border-bottom: none;
+      padding-bottom: 0;
+    }
+    .faq-question {
+      font-size: 1.05rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+      color: var(--text-primary);
+    }
+    .faq-answer {
+      font-size: 0.95rem;
+      color: var(--text-secondary);
+      line-height: 1.6;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Background Canvas/Aura -->
+  <div class="ambient-background">
+    <div class="ambient-glow-1"></div>
+    <div class="ambient-glow-2"></div>
+    <div class="ambient-glow-3"></div>
+  </div>
+  <div class="cursor-glow" id="cursorGlow"></div>
+
+  <!-- Header Navigation -->
+  <header class="scrolled" id="mainHeader">
+    <div class="nav-container">
+      <a href="index.html" class="logo">
+        <div class="logo-icon">Z</div>
+        ZARRIOD
+      </a>
+      
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle Navigation Menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="4" y1="12" x2="20" y2="12"></line>
+          <line x1="4" y1="6" x2="20" y2="6"></line>
+          <line x1="4" y1="18" x2="20" y2="18"></line>
+        </svg>
+      </button>
+
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="index.html#apps" class="nav-link">Our Apps</a></li>
+        <li><a href="index.html#contact" class="nav-link">Contact</a></li>
+      </ul>
+    </div>
+  </header>
+
+  <!-- Product Details Content -->
+  <main class="container product-container">
+    <a href="index.html" class="btn btn-secondary back-btn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="transform: rotate(180deg);"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      Back to Home
+    </a>
+
+    <!-- Product Hero Header -->
+    <section class="product-hero reveal active">
+      <div class="app-icon" style="background: linear-gradient(135deg, hsl(174, 90%, 50%), hsl(263, 90%, 60%)); width: 90px; height: 90px; font-size: 3rem; margin: 0 auto;">📦</div>
+      <div class="product-title-group" style="text-align: left;">
+        <h1>PickVault</h1>
+        <p class="product-subtitle">Take the impulse out of shopping.</p>
+        
+        <div class="meta-badge-row">
+          <span class="meta-badge">
+            <svg viewBox="0 0 24 24"><path d="M6 18c0 .55.45 1 1 1h1v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h2v3.5c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5V19h1c.55 0 1-.45 1-1V8H6v10zM3.5 8C2.67 8 2 8.67 2 9.5v7c0 .83.67 1.5 1.5 1.5S5 17.33 5 16.5v-7C5 8.67 4.33 8 3.5 8zm17 0c-.83 0-1.5.67-1.5 1.5v7c0 .83.67 1.5 1.5 1.5s1.5-.67 1.5-1.5v-7c0-.83-.67-1.5-1.5-1.5zm-5.8-5.38l1.45-1.45c.2-.2.2-.51 0-.71a.495.495 0 0 0-.7 0l-1.6 1.6C12.9 2.03 12.46 2 12 2c-.46 0-.9.03-1.35.07l-1.6-1.6c-.2-.2-.51-.2-.71 0-.2.2-.2.51 0 .71l1.45 1.45C8.3 3.6 7.06 5.62 7 8h10c-.06-2.38-1.3-4.4-3.2-5.38zM9 5.5c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5zm6 0c-.28 0-.5-.22-.5-.5s.22-.5.5-.5.5.22.5.5-.22.5-.5.5z"/></svg>
+            Android APK
+          </span>
+          <span class="meta-badge">v1.0.3 (Latest)</span>
+          <span class="meta-badge">100% Offline-First</span>
+          <span class="meta-badge">No Permissions Required</span>
+        </div>
+
+        <div>
+          <a href="https://pickvault.en.uptodown.com/android" class="btn btn-primary" target="_blank" rel="noopener">
+            Get PickVault on Uptodown
+          </a>
+        </div>
+      </div>
+    </section>
+
+    <!-- Detailed Split Grid -->
+    <div class="info-grid">
+      
+      <!-- Left side: Description and Features -->
+      <div class="grid" style="gap: var(--spacing-md);">
+        
+        <article class="glass-card detail-card reveal">
+          <h2>Why PickVault?</h2>
+          <p>PickVault is a simple, clean, and free Android utility designed to take the impulse out of shopping. By providing a dedicated, permission-free sandbox to document, budget, and evaluate planned purchases, PickVault helps you make intentional acquisitions at your own pace without sharing your data.</p>
+        </article>
+
+        <article class="glass-card detail-card reveal">
+          <h2>Key Features</h2>
+          <p>PickVault delivers an intentional space to track shopping contenders with high-utility features:</p>
+          
+          <ul class="features-list">
+            <li class="feature-item">
+              <span class="feature-check">✓</span>
+              <div class="feature-text">
+                <h4>Create custom collections ('Picks')</h4>
+                <p>Group items with custom targets, categories, budgets, and icons to structure your wishlists.</p>
+              </div>
+            </li>
+            <li class="feature-item">
+              <span class="feature-check">✓</span>
+              <div class="feature-text">
+                <h4>Track granular details</h4>
+                <p>Record brands, price ranges, product URLs, notes, and research summaries for every logged item.</p>
+              </div>
+            </li>
+            <li class="feature-item">
+              <span class="feature-check">✓</span>
+              <div class="feature-text">
+                <h4>Set preferred selections</h4>
+                <p>Highlight your top purchase contenders inside a collection to easily stay focused on what you need.</p>
+              </div>
+            </li>
+            <li class="feature-item">
+              <span class="feature-check">✓</span>
+              <div class="feature-text">
+                <h4>100% offline local database</h4>
+                <p>Operates entirely locally on your device with zero permissions or internet connection needed.</p>
+              </div>
+            </li>
+            <li class="feature-item">
+              <span class="feature-check">✓</span>
+              <div class="feature-text">
+                <h4>Completely free</h4>
+                <p>Enjoy basic utility with zero ads, third-party analytics trackers, or hidden charges.</p>
+              </div>
+            </li>
+          </ul>
+        </article>
+
+        <!-- FAQ Section -->
+        <article class="glass-card detail-card reveal">
+          <h2>Frequently Asked Questions</h2>
+          
+          <div class="faq-item">
+            <div class="faq-question">Where is my data stored?</div>
+            <div class="faq-answer">All list data, categories, and budgets are written directly to a secure local SQLite database on your Android device. It never leaves your phone and is not stored in the cloud.</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">How do I back up my picks?</div>
+            <div class="faq-answer">Because PickVault does not request network access permissions, it cannot sync your data to cloud servers. To back up your lists, we recommend backing up your Android device using standard system backups or copy-archiving your app data.</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">Is the app really free?</div>
+            <div class="faq-answer">Yes. PickVault is 100% free. There are no subscriptions, no in-app purchases, and no advertisements. It was created purely as a utility for mindful lifestyle planning.</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">Are you planning an iOS release?</div>
+            <div class="faq-answer">Yes, we are currently planning a local SwiftUI version of PickVault for iOS that maintains the same offline, permission-free architecture.</div>
+          </div>
+        </article>
+
+        <!-- Version History Section -->
+        <article class="glass-card detail-card reveal">
+          <h2>Version History</h2>
+          
+          <div class="faq-item">
+            <div class="faq-question">v1.0.3 (Latest) <span style="font-size: 0.8rem; background: var(--primary-glow); color: var(--primary); padding: 0.2rem 0.5rem; border-radius: 4px; margin-left: 0.5rem; font-weight: normal;">June 2026</span></div>
+            <div class="faq-answer">
+              <ul style="list-style-type: disc; padding-left: 1.2rem; margin-top: 0.25rem;">
+                <li>Optimized database queries and SQLite indexing routines for 40% faster fetch speeds.</li>
+                <li>Upgraded target SDK compatibility requirements to fully support Android 14.</li>
+                <li>Fixed minor rendering and layout sizing bugs on high-DPI screens.</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">v1.0.2 <span style="font-size: 0.8rem; color: var(--text-muted); padding: 0.2rem 0.5rem; margin-left: 0.5rem; font-weight: normal;">April 2026</span></div>
+            <div class="faq-answer">
+              <ul style="list-style-type: disc; padding-left: 1.2rem; margin-top: 0.25rem;">
+                <li>Added collection-level target budgeting limits and indicators.</li>
+                <li>Implemented the contender highlight option ("Preferred Selection").</li>
+              </ul>
+            </div>
+          </div>
+
+          <div class="faq-item" style="border-bottom: none; padding-bottom: 0;">
+            <div class="faq-question">v1.0.0 <span style="font-size: 0.8rem; color: var(--text-muted); padding: 0.2rem 0.5rem; margin-left: 0.5rem; font-weight: normal;">January 2026</span></div>
+            <div class="faq-answer">
+              <ul style="list-style-type: disc; padding-left: 1.2rem; margin-top: 0.25rem;">
+                <li>Initial public launch of PickVault on Android.</li>
+                <li>Basic Collections management, item specifications logger, and local storage configurations.</li>
+              </ul>
+            </div>
+          </div>
+        </article>
+
+        <!-- Development Roadmap Section -->
+        <article class="glass-card detail-card reveal">
+          <h2>Development Roadmap</h2>
+          
+          <div class="faq-item">
+            <div class="faq-question">Q3 2026 — Local Data Export</div>
+            <div class="faq-answer">Introduce multi-device local backup support, letting users export/import their wishlist collections via encrypted JSON files.</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">Q4 2026 — Web Importing</div>
+            <div class="faq-answer">Build a CSV wishlist parser to let users import existing items from browser wishlist files directly into local database Picks.</div>
+          </div>
+
+          <div class="faq-item">
+            <div class="faq-question">Q1 2027 — iOS Platform Launch</div>
+            <div class="faq-answer">Create a companion Apple app in SwiftUI, maintaining the same zero-permission, offline sandboxing design values.</div>
+          </div>
+
+          <div class="faq-item" style="border-bottom: none; padding-bottom: 0;">
+            <div class="faq-question">Q2 2027 — Local Biometric Lock</div>
+            <div class="faq-answer">Add an optional biometric privacy lock (fingerprint/face authorization) to keep private logs secure on shared mobile devices.</div>
+          </div>
+        </article>
+
+      </div>
+
+      <!-- Right side: Installation and Specs -->
+      <div class="grid" style="gap: var(--spacing-md); align-content: start;">
+        
+        <article class="glass-card detail-card reveal">
+          <h2>APK Installation Guide</h2>
+          <p>Installing an app via APK is quick and secure on Android. Follow these simple steps:</p>
+          
+          <div class="install-step">
+            <div class="step-number">1</div>
+            <div class="step-text">
+              <h4>Download the APK</h4>
+              <p>Click the "Get PickVault on Uptodown" button to download the latest `.apk` installation package.</p>
+            </div>
+          </div>
+
+          <div class="install-step">
+            <div class="step-number">2</div>
+            <div class="step-text">
+              <h4>Open the Package</h4>
+              <p>Tap the download completion notification or navigate to your device's "Downloads" folder and tap the PickVault APK file.</p>
+            </div>
+          </div>
+
+          <div class="install-step">
+            <div class="step-number">3</div>
+            <div class="step-text">
+              <h4>Enable Package Installer</h4>
+              <p>If prompted, toggle the system settings permission to "Allow installation from unknown sources". This is a standard security prompt for apps downloaded outside Google Play.</p>
+            </div>
+          </div>
+
+          <div class="install-step">
+            <div class="step-number">4</div>
+            <div class="step-text">
+              <h4>Complete Install</h4>
+              <p>Tap "Install" on the prompt screen, wait a few seconds, and launch PickVault from your app drawer!</p>
+            </div>
+          </div>
+        </article>
+
+        <article class="glass-card detail-card reveal">
+          <h2>App Specifications</h2>
+          <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem; text-align: left;">
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 0.75rem 0; color: var(--text-muted); font-weight: 500;">License</th>
+              <td style="padding: 0.75rem 0; font-weight: 600; text-align: right;">Free / Proprietary</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 0.75rem 0; color: var(--text-muted); font-weight: 500;">OS Requirement</th>
+              <td style="padding: 0.75rem 0; font-weight: 600; text-align: right;">Android 8.0 or higher</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 0.75rem 0; color: var(--text-muted); font-weight: 500;">Tech Stack</th>
+              <td style="padding: 0.75rem 0; font-weight: 600; text-align: right;">Java / Kotlin, SQLite</td>
+            </tr>
+            <tr style="border-bottom: 1px solid var(--border-color);">
+              <th style="padding: 0.75rem 0; color: var(--text-muted); font-weight: 500;">Network Usage</th>
+              <td style="padding: 0.75rem 0; font-weight: 600; text-align: right;">0 B (Fully Offline)</td>
+            </tr>
+            <tr>
+              <th style="padding: 0.75rem 0; color: var(--text-muted); font-weight: 500;">Developer</th>
+              <td style="padding: 0.75rem 0; font-weight: 600; text-align: right; color: var(--primary);">Zarriod Technologies</td>
+            </tr>
+          </table>
+        </article>
+
+      </div>
+
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer>
+    <div class="container">
+      <a href="index.html" class="logo footer-logo">
+        <div class="logo-icon">Z</div>
+        ZARRIOD
+      </a>
+      <ul class="footer-nav">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="index.html#apps">Apps</a></li>
+        <li><a href="index.html#contact">Contact</a></li>
+        <li><a href="privacy.html">Privacy Policy</a></li>
+        <li><a href="terms.html">Terms & Conditions</a></li>
+      </ul>
+      <p class="footer-text">&copy; 2026 Zarriod. All rights reserved. Crafted for visual and functional elegance.</p>
+    </div>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
